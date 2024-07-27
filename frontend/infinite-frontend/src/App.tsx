@@ -99,7 +99,7 @@ function App() {
     commandsEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [allCommands]);
 
-  const BACKEND_URL = "https://infinite-games-escape.fly.dev";
+  const BACKEND_URL = "http://localhost:3000";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
