@@ -78,13 +78,15 @@ export const handleSpecialCommand = async (command: string, ip: string) => {
       for (let i = 0; i < numIps; i++) {
         ips.push(generateIP());
       }
-      return { ips: ips };
+      return { terminalOutput: ips };
     case "connect":
       const res = ipAddr.safeParse(commandArr[1]);
       if (!res.success) {
-        return { error: "Invalid IP address" };
+        return { terminalOutput: "Invalid IP address" };
       }
       handleGenerateMachine(commandArr[1]);
+
+      return { terminalOutput: "Connected to " + commandArr[1] };
 
     default:
       return undefined;
@@ -103,6 +105,11 @@ export const parseCommand = async (
   // run the command associated with the hash
 
   if (!(await redis.exists(hash))) {
+    const specialCommand = await handleSpecialCommand(command, ip);
+
+    if (specialCommand) {
+      return { ...specialCommand, cwd: cwd || "~" };
+    }
     const commandOutput = await commandHandler({
       command,
       machineId: ip,
