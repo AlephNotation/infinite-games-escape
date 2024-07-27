@@ -1,10 +1,6 @@
 import { describe, it, expect } from "bun:test";
 
-import { Hono } from "hono";
-import { testClient } from "hono/testing";
-
 import app from "../src/index";
-import { use } from "hono/jsx";
 
 it("test", async () => {
   const res = await app.request("/command", {
@@ -13,13 +9,24 @@ it("test", async () => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      command: "ls",
+      command: "ls -la",
       ip: "104.1.5.4",
-      userId: "123",
+      userId: "1234",
     }),
   });
   console.log(res.status);
   const fff = await res.json();
   console.log(fff);
   expect(fff.terminalOutput.length).toBeGreaterThan(0);
+});
+
+describe.skip("Messages", () => {
+  it("test", async () => {
+    const res = await app.request("/user/123/messages", {
+      method: "GET",
+    });
+    console.log(res.status);
+    const fff = await res.json();
+    expect(fff.length).toBeGreaterThan(0);
+  });
 });
