@@ -13,4 +13,14 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy ./frontend/ --remote-only
         env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_FE }}
+  deployBE:
+    name: Deploy frontend
+    runs-on: ubuntu-latest
+    concurrency: deploy-group # optional: ensure only one action runs at a time
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --config ./backend/fly.toml --dockerfile ./backend/Dockerfile
+        env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_BE }}
