@@ -57,6 +57,9 @@ export async function commandHandler(args: {
   const systemPrompt =
     "You are simulating a terminal for a user. Only respond in commands valid for the shell you are simulating.";
   const cd = args.cd ? args.cd : "~";
+  console.log('this is the cd', cd);
+
+
 
   const pastMessages = await getChatMessages(args.userId);
   console.log(pastMessages);
@@ -72,6 +75,8 @@ export async function commandHandler(args: {
       cd,
     }) as CoreMessage[],
   });
+
+  console.log('here bro', object);
 
   const newMessages: CoreMessage[] = [
     { role: "user", content: args.command },
