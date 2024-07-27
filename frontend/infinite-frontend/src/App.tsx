@@ -1,4 +1,3 @@
-import Button from './Button'
 // import TypeAnimation from './TypeAnimation'
 import { useRef, useEffect, useState } from 'react'; // Add useRef and useEffect
 import { v4 as uuidv4 } from 'uuid';
@@ -131,16 +130,16 @@ function App() {
   }
 
 
-  const handleBeep = () => {
-    setAllCommands([...allCommands, 'beep']);
-  };
+  // const handleBeep = () => {
+  //   setAllCommands([...allCommands, 'beep']);
+  // };
 
   return (
     <div className='text-lime-300 h-screen overflow-hidden w-screen relative bg-black p-10 flex flex-col' style={{ fontFamily: 'Courier New, monospace' }} >
       <h1 className='text-lime-300 text-4xl font-bold mb-2'>iyana.ai</h1>
       <TypeAnimation sequence={[
         "Free Iyana",
-        1000,
+        "1000",
 
       ]} />
 
@@ -149,7 +148,7 @@ function App() {
 
       </div>
       <div style={{ maxHeight: '500px', overflowY: 'auto', scrollbarColor: '#8CF349 black', scrollbarWidth: 'thin' }} className='flex flex-col'>
-        {allCommands.map((command, index) => {
+        {allCommands.map((command: string, index: number) => {
           // Check if command is an array
           const commandsToDisplay = Array.isArray(command) ? command : [command];
           return commandsToDisplay.map((cmd, cmdIndex) => (
