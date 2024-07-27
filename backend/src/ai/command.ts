@@ -11,6 +11,7 @@ export const CommandResponseSchema = z.object({
   terminalOutput: z
     .array(z.string())
     .describe("The array of the console output"),
+  cwd: z.string().describe("The current working directory"),
   thought: z.string().describe("The AI's thoughts on the command."),
 });
 
@@ -19,6 +20,7 @@ const createMessages = (args: {
   systemPrompt: string;
   computerDetails?: MachineSchema;
   pastMessages?: CoreMessage[];
+  cd: string;
 }): CoreMessage[] => {
   const messages: CoreMessage[] = [
     {
@@ -26,11 +28,10 @@ const createMessages = (args: {
       content: args.systemPrompt,
     },
   ];
-
   if (args.computerDetails) {
     messages.push({
       role: "system",
-      content: `Here are the details for the computer the user is connected to: ${args.computerDetails}`,
+      content: `Here are the details for the computer the user is connected to: ${args.computerDetails} and is in the cwd is ${args.cd}`,
     });
   }
 
@@ -51,9 +52,11 @@ export async function commandHandler(args: {
   command: string;
   userId: string;
   model: any;
+  cd?: string;
 }) {
   const systemPrompt =
     "You are simulating a terminal for a user. Only respond in commands valid for the shell you are simulating.";
+  const cd = args.cd ? args.cd : "~";
 
   const pastMessages = await getChatMessages(args.userId);
   console.log(pastMessages);
@@ -66,6 +69,7 @@ export async function commandHandler(args: {
       systemPrompt,
       computerDetails: machineinfo,
       pastMessages,
+      cd,
     }) as CoreMessage[],
   });
 
