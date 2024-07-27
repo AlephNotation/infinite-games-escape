@@ -109,44 +109,25 @@ function App() {
       console.log('clearing');
       setAllCommands([""]);
       setInput('');
-    }
-    else {
+    } else {
       fetch(`${BACKEND_URL}/command`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-      body: JSON.stringify({ command: input, ip: getCookie("ip"), userId: getCookie("user"), cwd: getCookie("cwd"), }),
-
-      .then((res) => res.json())
-      .then((data) => {
-
-
-        console.log("output", data);
-        if (input.toLowerCase().includes("connect")) {
-          checkForIpChange(data.terminalOutput);
-        }
-        checkForDirectoryChange(data.cwd);
-
-        setAllCommands([...allCommands, input, data.terminalOutput]);
-        setInput('');
-      })
+        body: JSON.stringify({ command: input, ip: getCookie("ip"), userId: getCookie("user"), cwd: getCookie("cwd"), }),
+      }) // Added missing closing bracket here
         .then((res) => res.json())
         .then((data) => {
-
-          console.log("output", data.terminalOutput);
+          console.log("output", data);
           if (input.toLowerCase().includes("connect")) {
             checkForIpChange(data.terminalOutput);
-            checkForDirectoryChange(data.cwd);
           }
-
+          checkForDirectoryChange(data.cwd);
           setAllCommands([...allCommands, input, data.terminalOutput]);
           setInput('');
-        })
-
+        });
     }
-
-
   }
 
 
