@@ -6,6 +6,37 @@ import { v4 as uuidv4 } from 'uuid';
 // import useStore from './Session';
 
 
+const checkForDirectoryChange = (cwd: string) => {
+  document.cookie = "cwd=" + cwd;
+}
+
+
+const checkForIpChange = (terminalOutput: string[]) => {
+  const firstLine = terminalOutput[0];
+  const firstLineSplit = firstLine.split(' ');
+
+  if (terminalOutput.some(line => line.toLowerCase().includes('connection established.'))) {
+    const sshLine = terminalOutput.find(line => line.startsWith('ssh'));
+    if (sshLine) {
+      const ipRegex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/;
+      const match = sshLine.match(ipRegex);
+      if (match) {
+        const ip = match[0];
+        console.log('New IP:', ip);
+        document.cookie = "ip=" + ip;
+      }
+    }
+  }
+
+  if (firstLineSplit[0] === 'ssh') {
+    const ip = firstLineSplit[1];
+    console.log(ip);
+
+
+    document.cookie = "ip=" + ip;
+  }
+}
+
 function App() {
   const getCookie = (name: string) => {
     const value = `; ${document.cookie}`;
@@ -19,9 +50,13 @@ function App() {
     return undefined;
   };
 
+  const cwd = getCookie("cwd");
+  if (!cwd) {
+    document.cookie = "cwd=/";
+  }
   const ip = getCookie("ip");
   if (!ip) {
-    document.cookie = "ip=127.0.0.1";
+    document.cookie = "ip=localhost";
   }
   console.log("current ip", getCookie("ip"));
 
@@ -62,11 +97,12 @@ function App() {
     commandsEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [allCommands]);
 
+  const BACKEND_URL = "http://localhost:3000";
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     console.log('submitteddddd');
 
-
-    fetch('https://infinite-games-escape.fly.dev/command', {
+    fetch(`${BACKEND_URL}/command`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -75,7 +111,13 @@ function App() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log('data.terminalOutput', data.terminalOutput);
+
+        console.log("output", data.terminalOutput);
+        if (input.toLowerCase().includes("connect")) {
+          checkForIpChange(data.terminalOutput);
+          checkForDirectoryChange(data.cwd);
+        }
+
         setAllCommands([...allCommands, input, data.terminalOutput]);
         setInput('');
       })
@@ -109,7 +151,7 @@ function App() {
         <div ref={commandsEndRef} /> {/* This div will be used to scroll into view */}
       </div>
       <form onSubmit={handleSubmit}>
-        $   <input
+        {getCookie("ip")}{getCookie("cwd")} $   <input
           type="text"
           className='bg-black text-lime-300 font-bold py-2 px-4 mb-4 mr-4 appearance-none focus:outline-none '
           value={input}
@@ -121,3 +163,34 @@ function App() {
 }
 
 export default App
+
+
+
+// check if the terminaloutput includes a new IP of the form
+// 'ssh 127.0.0.1'
+// and if so, update the cookie to the new IP 
+// first i need to pull iyana's updates 
+// and then i need to add logic to parse the output of the command
+// add a function called checkForIpChange
+// 
+
+// or actually just hit the machine endpoint and check if the ip is different than 
+// the ip in the cookie? but the machine endpoint is not the currrent ip 
+// 
+
+// logic on the frontend
+// if ip is home
+
+// display readme.txt
+
+// add a prompt 
+
+// type help
+// scan 
+
+// special commands that live on the backend
+// setUser
+// connect
+// scan
+// help - offers a hint
+// 
