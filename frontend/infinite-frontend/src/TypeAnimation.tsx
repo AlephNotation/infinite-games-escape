@@ -9,7 +9,6 @@ const ExampleComponent = (props: { sequence: string[] }) => {
             style={{ fontSize: '1.5em', display: 'inline-block', marginBottom: '10px', marginTop: '10px' }}
             repeat={Infinity}
             omitDeletionAnimation={true}
-            cursor={false}
         />
     );
 };

@@ -2,6 +2,7 @@ import Button from './Button'
 // import TypeAnimation from './TypeAnimation'
 import { useRef, useEffect, useState } from 'react'; // Add useRef and useEffect
 import { v4 as uuidv4 } from 'uuid';
+import TypeAnimation from './TypeAnimation';
 
 // import useStore from './Session';
 
@@ -101,15 +102,22 @@ function App() {
   const BACKEND_URL = "https://infinite-games-escape.fly.dev";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    console.log('submitteddddd');
+    e.preventDefault();
 
-    fetch(`${BACKEND_URL}/command`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    console.log('submitteddddd');
+    if (input === 'clear') {
+      console.log('clearing');
+      setAllCommands([""]);
+      setInput('');
+    }
+    else {
+      fetch(`${BACKEND_URL}/command`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       body: JSON.stringify({ command: input, ip: getCookie("ip"), userId: getCookie("user"), cwd: getCookie("cwd"), }),
-    })
+
       .then((res) => res.json())
       .then((data) => {
 
@@ -123,10 +131,21 @@ function App() {
         setAllCommands([...allCommands, input, data.terminalOutput]);
         setInput('');
       })
+        .then((res) => res.json())
+        .then((data) => {
 
-    e.preventDefault();
-    setAllCommands([...allCommands, input]);
-    setInput('');
+          console.log("output", data.terminalOutput);
+          if (input.toLowerCase().includes("connect")) {
+            checkForIpChange(data.terminalOutput);
+            checkForDirectoryChange(data.cwd);
+          }
+
+          setAllCommands([...allCommands, input, data.terminalOutput]);
+          setInput('');
+        })
+
+    }
+
 
   }
 
@@ -136,13 +155,19 @@ function App() {
   };
 
   return (
-    <div className='text-lime-300 h-full overflow-y-auto w-screen relative bg-black p-10 flex flex-col' style={{ fontFamily: 'Courier New, monospace' }} >
+    <div className='text-lime-300 h-screen overflow-hidden w-screen relative bg-black p-10 flex flex-col' style={{ fontFamily: 'Courier New, monospace' }} >
       <h1 className='text-lime-300 text-4xl font-bold mb-2'>iyana.ai</h1>
+      <TypeAnimation sequence={[
+        "Take Over the world",
+        1000,
+
+      ]} />
+
       <div className='flex flex-row justify-between'>
         {/* <Button text="Beep" onClick={handleBeep} /> */}
 
       </div>
-      <div style={{ maxHeight: '500px', overflowY: 'auto' }} className='flex flex-col'>
+      <div style={{ maxHeight: '500px', overflowY: 'auto', scrollbarColor: '#8CF349 black', scrollbarWidth: 'thin' }} className='flex flex-col'>
         {allCommands.map((command, index) => {
           // Check if command is an array
           const commandsToDisplay = Array.isArray(command) ? command : [command];
