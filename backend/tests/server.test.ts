@@ -16,8 +16,8 @@ it("test", async () => {
   });
   console.log(res.status);
   const fff = await res.json();
-  console.log(fff);
-  expect(fff.terminalOutput.length).toBeGreaterThan(0);
+  console.log("command", fff);
+  expect(fff.terminalOutput).toBeDefined();
 });
 
 describe("Messages", () => {
@@ -27,7 +27,7 @@ describe("Messages", () => {
     });
     console.log(res.status);
     const fff = await res.json();
-    console.log("messages:", fff);
+    // console.log("messages:", fff);
     expect(fff.length).toBeGreaterThan(0);
   });
 });

@@ -114,6 +114,6 @@ export const parseCommand = async (
     return commandOutput;
   } else {
     const redisData = await redis.get(hash);
-    return redisData;
+    return JSON.parse(redisData as string);
   }
 };
