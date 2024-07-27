@@ -8,6 +8,7 @@ describe("AI text response", () => {
     const response = await commandHandler({
       machineId: ip,
       command: "ls",
+      userId: "123",
       model: bestModel,
     });
 

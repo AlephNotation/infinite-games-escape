@@ -1,39 +1,10 @@
-import { z } from "@hono/zod-openapi";
-import { createRoute } from "@hono/zod-openapi";
 import { Hono } from "hono";
+import { parseCommand } from "../controllers";
 
+export const commandRouter = new Hono();
 
-
-export const ParamsSchema = z.object({
-  ip: z.string().ip(),
-  command: z.string(),
+commandRouter.post("/command", async (c) => {
+  const { command, ip, userId } = await c.req.json();
+  const response = await parseCommand(command, ip, userId);
+  return c.json(response);
 });
-
-const commandRoute = createRoute({
-  method: "post",
-  path: "/command",
-  request: {
-    body: {
-      content: {
-        "application/json": {
-          schema: ParamsSchema,
-        },
-      },
-    },
-  },
-  responses: {
-    200: {
-      content: {
-        "application/json": {
-          schema: z.string(),
-        },
-      },
-      description: "Command executed successfully",
-    },
-  },
-
-});
-
-export default commandRoute;
-
-
