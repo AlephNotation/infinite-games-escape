@@ -25,8 +25,6 @@ function App() {
   }
   console.log("current ip", getCookie("ip"));
 
-
-
   useEffect(() => {
     const username = getCookie("user");
     if (!username) {
@@ -44,10 +42,11 @@ function App() {
     commandsEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [allCommands]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     console.log('submitteddddd');
 
-    fetch('http://localhost:3000/command', {
+
+    fetch('https://infinite-games-escape.fly.dev/command', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -56,38 +55,34 @@ function App() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        setAllCommands([...allCommands, data.command]);
+        console.log(data.terminalOutput);
+        setAllCommands([...allCommands, input, data.terminalOutput]);
         setInput('');
       })
 
     e.preventDefault();
     setAllCommands([...allCommands, input]);
     setInput('');
-    console.log('hit')
-    const response = await fetch("https://infinite-games-escape.fly.dev/command", {
-      body: JSON.stringify({ command: input, username: getCookie("user"), userId: getCookie("user") }),
-      method: "POST",
-    });
-    console.log('here')
 
-    const data = await response.json();
-    console.log('data', data);
   }
+
+  console.log(allCommands);
+
 
   return (
     <div className='text-lime-300 h-full overflow-y-auto w-screen relative bg-black p-10 flex flex-col' style={{ fontFamily: 'Courier New, monospace' }} >
       <h1 className='text-lime-300 text-4xl font-bold mb-2'>Welcome to the Terminal</h1>
       <div className='flex flex-row justify-between'>
-        <Button text="Root" />
-        <Button text="Start" />
-        <Button text="Hack" />
-        <Button text="Help" />
-        <Button text="Exit" />
+        <Button text="Beep" />
+
       </div>
       <div style={{ maxHeight: '300px', overflowY: 'auto' }} className='flex flex-col'>
         {allCommands.map((command, index) => {
-          return <span key={index} className='text-lime-300 w-screen'>{command}</span>
+          // Check if command is an array
+          const commandsToDisplay = Array.isArray(command) ? command : [command];
+          return commandsToDisplay.map((cmd, cmdIndex) => (
+            <span key={`${index}-${cmdIndex}`} className='text-lime-300 w-screen'>{cmd}</span>
+          ));
         })}
         <div ref={commandsEndRef} /> {/* This div will be used to scroll into view */}
       </div>
