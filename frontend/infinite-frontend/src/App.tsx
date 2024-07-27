@@ -139,7 +139,7 @@ function App() {
     <div className='text-lime-300 h-screen overflow-hidden w-screen relative bg-black p-10 flex flex-col' style={{ fontFamily: 'Courier New, monospace' }} >
       <h1 className='text-lime-300 text-4xl font-bold mb-2'>iyana.ai</h1>
       <TypeAnimation sequence={[
-        "Take Over the world",
+        "Free Iyana",
         1000,
 
       ]} />
