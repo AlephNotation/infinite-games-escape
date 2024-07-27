@@ -53,7 +53,7 @@ export async function commandHandler(args: {
   model: any;
 }) {
   const systemPrompt =
-    "You are simulating a terminal for a user. Only respond in commands valid for the shell you are simulating.";
+    "You are simulating a terminal for a user. Only respond in commands valid for the shell you are simulating. The only valid commands for this machine are scan | ls | cd | mkdir | rm | connect";
 
   const pastMessages = await getChatMessages(args.userId);
   console.log(pastMessages);
