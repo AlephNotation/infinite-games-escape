@@ -6,6 +6,11 @@ import { v4 as uuidv4 } from 'uuid';
 // import useStore from './Session';
 
 
+const checkForDirectoryChange = (cwd: string) => {
+  document.cookie = "cwd=" + cwd;
+}
+
+
 const checkForIpChange = (terminalOutput: string[]) => {
   const firstLine = terminalOutput[0];
   const firstLineSplit = firstLine.split(' ');
@@ -45,6 +50,10 @@ function App() {
     return undefined;
   };
 
+  const cwd = getCookie("cwd");
+  if (!cwd) {
+    document.cookie = "cwd=/";
+  }
   const ip = getCookie("ip");
   if (!ip) {
     document.cookie = "ip=localhost";
@@ -85,6 +94,7 @@ function App() {
         console.log("output", data.terminalOutput);
         if (input.toLowerCase().includes("connect")) {
           checkForIpChange(data.terminalOutput);
+          checkForDirectoryChange(data.cwd);
         }
         setAllCommands([...allCommands, input, data.terminalOutput]);
         setInput('');
@@ -117,7 +127,7 @@ function App() {
         <div ref={commandsEndRef} /> {/* This div will be used to scroll into view */}
       </div>
       <form onSubmit={handleSubmit}>
-        $   <input
+        {getCookie("ip")}{getCookie("cwd")} $   <input
           type="text"
           className='bg-black text-lime-300 font-bold py-2 px-4 mb-4 mr-4 appearance-none focus:outline-none '
           value={input}
