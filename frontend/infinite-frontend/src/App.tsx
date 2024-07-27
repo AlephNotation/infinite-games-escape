@@ -12,8 +12,6 @@ function App() {
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
   };
-  console.log(getCookie("user"));
-
   // Example usage
 
   useEffect(() => {
@@ -26,14 +24,26 @@ function App() {
 
   const [allCommands, setAllCommands] = useState<string[]>(['Welcome', 'Please enter your name']);
   const [input, setInput] = useState<string>('');
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log('submitteddddd');
+  const commandsEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    commandsEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [allCommands]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setAllCommands([...allCommands, input]);
     setInput('');
-  }
-  console.log(allCommands);
+    console.log('hit')
+    const response = await fetch("https://infinite-games-escape.fly.dev/command", {
+      body: JSON.stringify({ command: input, username: getCookie("user"), userId: getCookie("user") }),
+      method: "POST",
+    });
+    console.log('here')
 
+    const data = await response.json();
+    console.log('data', data);
+  }
 
   return (
     <div className='text-lime-300 h-full overflow-y-auto w-screen relative bg-black p-10 flex flex-col' style={{ fontFamily: 'Courier New, monospace' }} >
@@ -45,11 +55,12 @@ function App() {
         <Button text="Help" />
         <Button text="Exit" />
       </div>
-      <br></br>
-      {allCommands.map((command, index) => {
-        return <span className='text-lime-300 w-screen'>{command}
-        </span>
-      })}
+      <div style={{ maxHeight: '300px', overflowY: 'auto' }} className='flex flex-col'>
+        {allCommands.map((command, index) => {
+          return <span key={index} className='text-lime-300 w-screen'>{command}</span>
+        })}
+        <div ref={commandsEndRef} /> {/* This div will be used to scroll into view */}
+      </div>
       <form onSubmit={handleSubmit}>
         $   <input
           type="text"
@@ -58,7 +69,6 @@ function App() {
           onChange={(e) => setInput(e.target.value)}
         />
       </form>
-
     </div>
   )
 }
