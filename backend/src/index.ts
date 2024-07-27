@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { commandRouter } from "./routes/command.route";
-import { getRouterName, showRoutes } from "hono/dev";
+import { chatMessagesRouter } from "./routes/chatMessages.route";
 
 const app = new Hono();
 
@@ -9,6 +9,6 @@ app.get("/", (c) => {
 });
 
 app.route("", commandRouter);
+app.route("", chatMessagesRouter);
 
-showRoutes(app, { verbose: true });
 export default app;
