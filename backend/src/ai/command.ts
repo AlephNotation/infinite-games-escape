@@ -41,6 +41,7 @@ const createMessages = (args: {
 export async function commandHandler(args: {
   machineId: string;
   command: string;
+  userId: string;
   model: any;
 }) {
   const systemPrompt =
