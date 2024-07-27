@@ -83,7 +83,9 @@ function App() {
       .then((res) => res.json())
       .then((data) => {
         console.log("output", data.terminalOutput);
-        checkForIpChange(data.terminalOutput);
+        if (input.toLowerCase().includes("connect")) {
+          checkForIpChange(data.terminalOutput);
+        }
         setAllCommands([...allCommands, input, data.terminalOutput]);
         setInput('');
       })
