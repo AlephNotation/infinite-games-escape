@@ -20,13 +20,22 @@ it("test", async () => {
   expect(fff.terminalOutput.length).toBeGreaterThan(0);
 });
 
-describe.skip("Messages", () => {
+describe("Messages", () => {
   it("test", async () => {
-    const res = await app.request("/user/123/messages", {
+    const res = await app.request("/user/1234/messages", {
       method: "GET",
     });
     console.log(res.status);
     const fff = await res.json();
+    console.log("messages:", fff);
     expect(fff.length).toBeGreaterThan(0);
+  });
+});
+
+describe("Should fetch a machine", () => {
+  it("should generate a machine", async () => {
+    const res = await app.request("/machine/140.4.9.2");
+
+    expect(await res.json()).toBeDefined();
   });
 });
