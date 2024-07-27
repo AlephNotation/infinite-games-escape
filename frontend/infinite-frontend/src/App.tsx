@@ -68,8 +68,28 @@ function App() {
     }
 
   }, []);
+  const [allCommands, setAllCommands] = useState<any>([
+    [
+      "     .__________________________.",
+      "    | .___________________. |==|",
+      "    | |     Hello ][      | |  |",
+      "    | |                   | |  |",
+      "    | |                   | |  |",
+      "    | |                   | |  |",
+      "    | |                  | | ,|",
+      "    | !___________________! |(c|",
+      "    !_______________________!__!",
+      "    !_______________________!__!",
+      "   /                            \\",
+      "  /  [][][][][][][][][][][][][]  \\",
+      " /  [][][][][][][][][][][][][][]  \\",
+      "(  [][][][][____________][][][][]  )",
+      " \\ ------------------------------ /",
+      "  \\______________________________/"
+    ],
+    "Welcome"
+  ]);
 
-  const [allCommands, setAllCommands] = useState<string[]>(['Welcome', 'Please enter your name']);
   const [input, setInput] = useState<string>('');
   const commandsEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -91,11 +111,13 @@ function App() {
     })
       .then((res) => res.json())
       .then((data) => {
+
         console.log("output", data.terminalOutput);
         if (input.toLowerCase().includes("connect")) {
           checkForIpChange(data.terminalOutput);
           checkForDirectoryChange(data.cwd);
         }
+
         setAllCommands([...allCommands, input, data.terminalOutput]);
         setInput('');
       })
@@ -106,17 +128,19 @@ function App() {
 
   }
 
-  console.log(allCommands);
 
+  const handleBeep = () => {
+    setAllCommands([...allCommands, 'beep']);
+  };
 
   return (
     <div className='text-lime-300 h-full overflow-y-auto w-screen relative bg-black p-10 flex flex-col' style={{ fontFamily: 'Courier New, monospace' }} >
       <h1 className='text-lime-300 text-4xl font-bold mb-2'>Welcome to the Terminal</h1>
       <div className='flex flex-row justify-between'>
-        <Button text="Beep" />
+        <Button text="Beep" onClick={handleBeep} />
 
       </div>
-      <div style={{ maxHeight: '300px', overflowY: 'auto' }} className='flex flex-col'>
+      <div style={{ maxHeight: '500px', overflowY: 'auto' }} className='flex flex-col'>
         {allCommands.map((command, index) => {
           // Check if command is an array
           const commandsToDisplay = Array.isArray(command) ? command : [command];
