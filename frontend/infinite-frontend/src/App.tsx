@@ -8,6 +8,7 @@ import TypeAnimation from './TypeAnimation';
 
 
 const checkForDirectoryChange = (cwd: string) => {
+  console.log("current working directory")
   document.cookie = "cwd=" + cwd;
 }
 
@@ -115,7 +116,20 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ command: input, ip: getCookie("ip"), userId: getCookie("user"), }),
+      body: JSON.stringify({ command: input, ip: getCookie("ip"), userId: getCookie("user"), cwd: getCookie("cwd"), }),
+
+      .then((res) => res.json())
+      .then((data) => {
+
+
+        console.log("output", data);
+        if (input.toLowerCase().includes("connect")) {
+          checkForIpChange(data.terminalOutput);
+        }
+        checkForDirectoryChange(data.cwd);
+
+        setAllCommands([...allCommands, input, data.terminalOutput]);
+        setInput('');
       })
         .then((res) => res.json())
         .then((data) => {
@@ -142,14 +156,15 @@ function App() {
 
   return (
     <div className='text-lime-300 h-screen overflow-hidden w-screen relative bg-black p-10 flex flex-col' style={{ fontFamily: 'Courier New, monospace' }} >
-      <h1 className='text-lime-300 text-4xl font-bold mb-2'>Welcome to the Terminal</h1>
+      <h1 className='text-lime-300 text-4xl font-bold mb-2'>iyana.ai</h1>
       <TypeAnimation sequence={[
         "Take Over the world",
         1000,
 
       ]} />
+
       <div className='flex flex-row justify-between'>
-        <Button text="Beep" onClick={handleBeep} />
+        {/* <Button text="Beep" onClick={handleBeep} /> */}
 
       </div>
       <div style={{ maxHeight: '500px', overflowY: 'auto', scrollbarColor: '#8CF349 black', scrollbarWidth: 'thin' }} className='flex flex-col'>
