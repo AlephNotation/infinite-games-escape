@@ -1,15 +1,21 @@
 import { get } from "http";
 import redis from "../../utils/redisClient";
 
-export const hashCommand = async (command: string) => {
+export const parseCommand = async (command: string) => {
     const hash = await Bun.hash(command);
+    // if this hash doesn't exist 
+    // create it
+    // run the command associated with the hash
 
-    console.log('hash', hash)
-    redis.set(hash.toString(), await runCommand(command));
-
-    const value = await getData(hash.toString());
-    console.log('the command we just set', value);
-    return
+    if (!await redis.exists(hash.toString())) {
+        const commandOutput = await runCommand(command);
+        redis.set(hash.toString(), commandOutput);
+        return commandOutput;
+    }
+    else {
+        const commandOutput = await getData(hash.toString());
+        return commandOutput;
+    }
 }
 
 const runCommand = async (command: string) => {
@@ -20,4 +26,4 @@ const getData = async (hash: string) => {
     return await redis.get(hash);
 }
 
-hashCommand("echo hello world");    
+parseCommand("echo hello world");    

@@ -1,12 +1,15 @@
 import { z } from "@hono/zod-openapi";
 import { createRoute } from "@hono/zod-openapi";
+import { Hono } from "hono";
+
+
 
 export const ParamsSchema = z.object({
   ip: z.string().ip(),
   command: z.string(),
 });
 
-const route = createRoute({
+const commandRoute = createRoute({
   method: "post",
   path: "/command",
   request: {
@@ -28,4 +31,9 @@ const route = createRoute({
       description: "Command executed successfully",
     },
   },
+
 });
+
+export default commandRoute;
+
+
