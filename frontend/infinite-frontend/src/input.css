@@ -1,0 +1,25 @@
+.custom-caret {
+  caret-color: green;
+  font-family: monospace;
+  height: 1.5em;
+  padding-left: 10px;
+  border-right: 2px solid green;
+  animation: blink 1s steps(1) infinite;
+  width: 50px;
+}
+
+.custom-caret::placeholder {
+  opacity: 0;
+}
+
+@keyframes blink {
+  0% {
+    border-color: transparent;
+  }
+  50% {
+    border-color: green;
+  }
+  100% {
+    border-color: transparent;
+  }
+}
