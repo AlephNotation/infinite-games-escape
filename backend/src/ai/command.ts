@@ -4,7 +4,6 @@ import { generateObject, type CoreMessage } from "ai";
 import { z } from "zod";
 
 import { bestModel } from "./model";
-import { ChatRequestMessage } from "./messages";
 
 export const CommandResponseSchema = z.object({
   terminalOutput: z
@@ -47,11 +46,3 @@ export async function commandHandler(args: {
 
   return object;
 }
-
-commandHandler({
-  command: "ls",
-  systemPrompt: "You are simulating a terminal for a user",
-  model: bestModel,
-})
-  .then(console.log)
-  .catch(console.error);
