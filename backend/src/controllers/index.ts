@@ -22,7 +22,8 @@ export const parseCommand = async (
         await redis.set(hash.toString(), JSON.stringify(commandOutput.terminalOutput));
         return commandOutput;
     } else {
-        return await redis.get(hash);
+        const redisData = await redis.get(hash);
+        return { terminalOutput: JSON.parse(redisData || "[]") };
     }
 };
 
