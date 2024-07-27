@@ -7,8 +7,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 function App() {
-  const inputRef = useRef(null); // Create a ref for the input
-
   const getCookie = (name: string) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -19,9 +17,6 @@ function App() {
   // Example usage
 
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus(); // Focus the input on load
-    }
     const username = getCookie("user");
     if (!username) {
       const uuid = uuidv4();
@@ -41,7 +36,7 @@ function App() {
 
 
   return (
-    <div className='text-lime-300 h-full h-screen w-screen relative bg-black p-10 flex flex-col' style={{ fontFamily: 'Courier New, monospace' }} >
+    <div className='text-lime-300 h-full overflow-y-auto w-screen relative bg-black p-10 flex flex-col' style={{ fontFamily: 'Courier New, monospace' }} >
       <h1 className='text-lime-300 text-4xl font-bold mb-2'>Welcome to the Terminal</h1>
       <div className='flex flex-row justify-between'>
         <Button text="Root" />
