@@ -1,26 +1,23 @@
+import { get } from "http";
 import redis from "../../utils/redisClient";
 
 export const hashCommand = async (command: string) => {
     const hash = await Bun.hash(command);
 
-    console.log(hash)
+    console.log('hash', hash)
+    redis.set(hash.toString(), await runCommand(command));
 
+    const value = await getData(hash.toString());
+    console.log('the command we just set', value);
+    return
 }
 
-const testRedis = async () => {
-    try {
-        await redis.set('ayo', 'brother');
-        console.log('Value set: brother');
+const runCommand = async (command: string) => {
+    return "dummy command data for command: " + command;
+}
 
-        const value = await redis.get('ayo');
-        console.log('Value retrieved:');
-        console.log('value', value);
-    } catch (error) {
-        console.error('Error interacting with Redis:', error);
-    }
-};
+const getData = async (hash: string) => {
+    return await redis.get(hash);
+}
 
-hashCommand("ls").catch(error => console.error('Error executing hashCommand:', error));
-console.log("hello bro");
-testRedis().catch(error => console.error('Error in testRedis:', error));
-
+hashCommand("echo hello world");    
