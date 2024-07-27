@@ -4,7 +4,9 @@
     "dev": "bun run --hot src/index.ts"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^0.0.33",
     "@hono/zod-openapi": "^0.15.1",
+    "ai": "^3.2.37",
     "hono": "^4.5.2",
     "ioredis": "^5.4.1",
     "redis": "^4.6.15",
