@@ -14,7 +14,6 @@ export const MachineSchema = z.object({
   hasRoot: z.boolean().describe("Whether the user has root access"),
   shell: z.string().describe("The shell the user is using"),
   hasGPU: z.boolean().describe("Whether the machine has a GPU"),
-  // validCommands: z.array(z.string()).describe("The valid commands for this machine, which are scan | ls | cd | mkdir | rm | connect"),
 });
 
 export type MachineSchema = z.infer<typeof MachineSchema>;

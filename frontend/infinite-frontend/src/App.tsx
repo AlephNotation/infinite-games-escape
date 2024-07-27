@@ -10,11 +10,24 @@ function App() {
   const getCookie = (name: string) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
+    if (parts.length === 2) {
+      const lastPart = parts.pop();
+      if (lastPart) {
+        return lastPart.split(';')[0];
+      }
+    }
+    return undefined;
   };
   console.log(getCookie("user"));
 
-  // Example usage
+
+  const ip = getCookie("ip");
+  if (!ip) {
+    document.cookie = "ip=127.0.0.1";
+  }
+  console.log("current ip", getCookie("ip"));
+
+
 
   useEffect(() => {
     const username = getCookie("user");
@@ -22,12 +35,28 @@ function App() {
       const uuid = uuidv4();
       document.cookie = "user=" + uuid;
     }
+
   }, []);
 
   const [allCommands, setAllCommands] = useState<string[]>(['Welcome', 'Please enter your name']);
   const [input, setInput] = useState<string>('');
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     console.log('submitteddddd');
+
+    fetch('http://localhost:3000/command', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ command: input, ip: getCookie("ip"), userId: getCookie("user"), }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setAllCommands([...allCommands, data.command]);
+        setInput('');
+      })
+
     e.preventDefault();
     setAllCommands([...allCommands, input]);
     setInput('');
