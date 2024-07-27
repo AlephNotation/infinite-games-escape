@@ -25,7 +25,7 @@ export const generateMachine = async (args: {
   const messages: CoreMessage[] = [
     {
       role: "system",
-      content: `describe the computer associated with the fictional ip address ${args.ip}`,
+      content: `describe the computer associated with the fictional ip address ${args.ip}. Assume the user is root`,
     },
     {
       role: "user",

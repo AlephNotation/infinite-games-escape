@@ -13,17 +13,16 @@ export const parseCommand = async (
     // run the command associated with the hash
 
     if (!(await redis.exists(hash))) {
-        const commandOutput = await runCommand(command);
-        redis.set(hash.toString(), commandOutput);
-        return commandOutput;
-    } else {
         const commandOutput = await commandHandler({
             command,
             machineId: ip,
             userId,
             model: bestModel,
         });
+        await redis.set(hash.toString(), JSON.stringify(commandOutput.terminalOutput));
         return commandOutput;
+    } else {
+        return await redis.get(hash);
     }
 };
 
@@ -34,3 +33,7 @@ const runCommand = async (command: string) => {
 const getData = async (hash: string) => {
     return await redis.get(hash);
 };
+
+
+// scan
+// connect - connect to a host
