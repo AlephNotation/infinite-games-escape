@@ -45,18 +45,20 @@ const checkForIpChange = (terminalOutput: string[]) => {
   }
 }
 
-function App() {
-  const getCookie = (name: string) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-      const lastPart = parts.pop();
-      if (lastPart) {
-        return lastPart.split(';')[0];
-      }
+const getCookie = (name: string) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    const lastPart = parts.pop();
+    if (lastPart) {
+      return lastPart.split(';')[0];
     }
-    return undefined;
-  };
+  }
+  return undefined;
+};
+
+function App() {
+
 
   const cwd = getCookie("cwd");
   if (!cwd) {
@@ -126,10 +128,10 @@ function App() {
         .then((res) => res.json())
         .then((data) => {
           console.log("output", data);
+          checkForDirectoryChange(data.cwd);
           if (input.toLowerCase().includes("connect")) {
             checkForIpChange(data.terminalOutput);
           }
-          checkForDirectoryChange(data.cwd);
           setAllCommands([...allCommands, input, data.terminalOutput]);
           setInput('');
         });
