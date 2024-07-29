@@ -29,6 +29,11 @@ const checkForIpChange = (terminalOutput: string[]) => {
     }
   }
 
+  // if the terminal output includes a line that says "connected to localhost" change the cookie to localhost
+  if (terminalOutput.some(line => line.toLowerCase().includes('connected to localhost'))) {
+    document.cookie = "ip=localhost";
+  }
+
   if (firstLineSplit[0] === 'ssh') {
     const ip = firstLineSplit[1];
     console.log(ip);
