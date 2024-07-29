@@ -98,7 +98,7 @@ function App() {
     commandsEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [allCommands]);
 
-  const BACKEND_URL = "http://localhost:3000";
+  const BACKEND_URL = "https://infinite-games-escape.onrender.com";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
