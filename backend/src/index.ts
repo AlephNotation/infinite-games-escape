@@ -21,3 +21,6 @@ app.route("", chatMessagesRouter);
 app.route("", machineRouter);
 
 export default app;
+
+// Add this line
+export const handler = app.fetch;

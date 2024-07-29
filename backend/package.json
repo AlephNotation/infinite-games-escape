@@ -1,7 +1,10 @@
 {
   "name": "backend",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.ts",
+    "build": "tsc",
+    "start": "node dist/src/index.js",
+    "vercel-build": "tsc"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^0.0.33",
