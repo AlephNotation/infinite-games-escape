@@ -24,6 +24,7 @@ const checkForIpChange = (terminalOutput: string[]) => {
         const ip = match[0];
         console.log('New IP:', ip);
         document.cookie = "ip=" + ip;
+        document.cookie = "cwd=/";
         break; // Stop after finding the first IP
       }
     }
@@ -32,6 +33,7 @@ const checkForIpChange = (terminalOutput: string[]) => {
   // if the terminal output includes a line that says "connected to localhost" change the cookie to localhost
   if (terminalOutput.some(line => line.toLowerCase().includes('connected to localhost') || line.toLowerCase().includes('connecting to localhost'))) {
     document.cookie = "ip=localhost";
+    document.cookie = "cwd=/";
   }
 
   if (firstLineSplit[0] === 'ssh') {
