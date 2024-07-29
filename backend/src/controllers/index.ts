@@ -97,7 +97,7 @@ export const parseCommand = async (
     userId: string,
     cwd: string
 ) => {
-    const hash = await Bun.hash(command + ip).toString();
+    const hash = await Bun.hash(command + ip + cwd).toString();
     // if this hash doesn't exist
     // create it
     // run the command associated with the hash
