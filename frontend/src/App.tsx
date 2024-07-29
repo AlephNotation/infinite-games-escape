@@ -16,17 +16,22 @@ const checkForIpChange = (terminalOutput: string[]) => {
   const firstLine = terminalOutput[0];
   const firstLineSplit = firstLine.split(' ');
 
-  if (terminalOutput.some(line => line.toLowerCase().includes('connection established.'))) {
-    const sshLine = terminalOutput.find(line => line.startsWith('ssh'));
-    if (sshLine) {
-      const ipRegex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/;
-      const match = sshLine.match(ipRegex);
+  if (terminalOutput.some(line => line.toLowerCase().includes('connection established'))) {
+    const ipRegex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/;
+    for (const line of terminalOutput) {
+      const match = line.match(ipRegex);
       if (match) {
         const ip = match[0];
         console.log('New IP:', ip);
         document.cookie = "ip=" + ip;
+        break; // Stop after finding the first IP
       }
     }
+  }
+
+  // if the terminal output includes a line that says "connected to localhost" change the cookie to localhost
+  if (terminalOutput.some(line => line.toLowerCase().includes('connected to localhost'))) {
+    document.cookie = "ip=localhost";
   }
 
   if (firstLineSplit[0] === 'ssh') {
@@ -98,7 +103,7 @@ function App() {
     commandsEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [allCommands]);
 
-  const BACKEND_URL = "https://infinite-games-escape.onrender.com";
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
