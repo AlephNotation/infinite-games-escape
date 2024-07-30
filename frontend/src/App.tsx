@@ -153,7 +153,7 @@ function App() {
             checkForIpChange(data.terminalOutput);
           }
           setLoading(false);
-          setAllCommands([...allCommands, <span className="text-orange-500">{data.ip + data.cwd + ' $ ' + input}</span>, data.terminalOutput]);
+          setAllCommands([...allCommands, <span className="text-orange-500">{getCookie("ip") + data.cwd + ' $ ' + input}</span>, data.terminalOutput]);
           setInput('');
         });
     }
