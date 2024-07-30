@@ -102,22 +102,28 @@ function App() {
 
   const [input, setInput] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [spinner, setSpinner] = useState<string>('|');
+
 
   const commandsEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     commandsEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [allCommands]);
+  }, [allCommands, loading]);
 
   useEffect(() => {
+    let intervalId: Timer;
     if (loading) {
-      setAllCommands([...allCommands, 'loading...']);
+      const spinnerChars = ['|', '/', '-', '\\'];
+      let index = 0;
+      intervalId = setInterval(() => {
+        setSpinner(spinnerChars[index]);
+        index = (index + 1) % spinnerChars.length;
+      }, 100);
     }
-    else {
-      setAllCommands([...allCommands, '']);
-    }
-
+    return () => clearInterval(intervalId);
   }, [loading]);
+
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -179,6 +185,8 @@ function App() {
             <span key={`${index}-${cmdIndex}`} className='text-lime-300 w-screen'>{cmd}</span>
           ));
         })}
+        {loading && <span className='text-lime-300 w-screen'>{spinner}</span>}
+
         <div ref={commandsEndRef} /> {/* This div will be used to scroll into view */}
       </div>
       <form onSubmit={handleSubmit}>
