@@ -153,7 +153,7 @@ function App() {
             checkForIpChange(data.terminalOutput);
           }
           setLoading(false);
-          setAllCommands([...allCommands, <span className="text-orange-500">{data.cwd + ' $ ' + input}</span>, data.terminalOutput]);
+          setAllCommands([...allCommands, <span className="text-orange-500">{data.ip + data.cwd + ' $ ' + input}</span>, data.terminalOutput]);
           setInput('');
         });
     }
@@ -189,13 +189,20 @@ function App() {
 
         <div ref={commandsEndRef} /> {/* This div will be used to scroll into view */}
       </div>
-      <form onSubmit={handleSubmit} className="text-orange-500">
-        {getCookie("ip")}{getCookie("cwd")} $   <input
-          type="text"
-          className='bg-black text-lime-300 font-bold py-2 px-4 mb-4 mr-4 appearance-none focus:outline-none '
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        />
+      <form onSubmit={handleSubmit} className="flex flex-col justify-center md:flex-row text-orange-500 md:justify-start md:items-center">
+        <div>
+
+          {getCookie("ip")}{getCookie("cwd")}
+        </div>
+        <div className="flex flex-row pl-2 items-center">
+          $
+          <input
+            type="text"
+            className='flex bg-black text-lime-300 font-bold py-2 px-4 appearance-none focus:outline-none '
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
+        </div>
       </form>
     </div>
   )
