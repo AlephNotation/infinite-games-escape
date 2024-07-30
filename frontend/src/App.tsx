@@ -101,16 +101,30 @@ function App() {
   ]);
 
   const [input, setInput] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+
   const commandsEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     commandsEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [allCommands]);
 
+  useEffect(() => {
+    if (loading) {
+      setAllCommands([...allCommands, 'loading...']);
+    }
+    else {
+      setAllCommands([...allCommands, '']);
+    }
+
+  }, [loading]);
+
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setLoading(true);
 
     console.log('submitteddddd');
     if (input === 'clear') {
@@ -132,6 +146,7 @@ function App() {
           if (input.toLowerCase().includes("connect")) {
             checkForIpChange(data.terminalOutput);
           }
+          setLoading(false);
           setAllCommands([...allCommands, input, data.terminalOutput]);
           setInput('');
         });
