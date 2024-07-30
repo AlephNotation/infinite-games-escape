@@ -112,7 +112,7 @@ function App() {
   }, [allCommands, loading]);
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+    let intervalId: number;
     if (loading) {
       const spinnerChars = ['|', '/', '-', '\\'];
       let index = 0;
