@@ -153,7 +153,7 @@ function App() {
             checkForIpChange(data.terminalOutput);
           }
           setLoading(false);
-          setAllCommands([...allCommands, input, data.terminalOutput]);
+          setAllCommands([...allCommands, <span className="text-orange-500">{data.cwd + ' $ ' + input}</span>, data.terminalOutput]);
           setInput('');
         });
     }
@@ -189,7 +189,7 @@ function App() {
 
         <div ref={commandsEndRef} /> {/* This div will be used to scroll into view */}
       </div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="text-orange-500">
         {getCookie("ip")}{getCookie("cwd")} $   <input
           type="text"
           className='bg-black text-lime-300 font-bold py-2 px-4 mb-4 mr-4 appearance-none focus:outline-none '
