@@ -194,11 +194,11 @@ function App() {
 
           {getCookie("ip")}{getCookie("cwd")}
         </div>
-        <div className="flex flex-row pl-2 items-center">
+        <div className="flex flex-row pl-2 w-full items-center">
           $
           <input
             type="text"
-            className='flex bg-black text-lime-300 font-bold py-2 px-4 appearance-none focus:outline-none '
+            className='w-full bg-black text-lime-300 font-bold py-2 px-4 appearance-none focus:outline-none '
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
