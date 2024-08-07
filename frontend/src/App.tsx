@@ -5,6 +5,11 @@ import TypeAnimation from './TypeAnimation';
 
 // import useStore from './Session';
 
+type Command = {
+  content: string[],
+  isInput: boolean
+}
+
 
 const checkForDirectoryChange = (cwd: string) => {
   console.log("current working directory")
@@ -78,31 +83,37 @@ function App() {
     }
 
   }, []);
-  const [allCommands, setAllCommands] = useState<any>([
-    [
-      "     .__________________________.",
-      "    | .___________________. |==|",
-      "    | |     Hello ][      | |  |",
-      "    | |                   | |  |",
-      "    | |                   | |  |",
-      "    | |                   | |  |",
-      "    | |                  | | ,|",
-      "    | !___________________! |(c|",
-      "    !_______________________!__!",
-      "    !_______________________!__!",
-      "   /                            \\",
-      "  /  [][][][][][][][][][][][][]  \\",
-      " /  [][][][][][][][][][][][][][]  \\",
-      "(  [][][][][____________][][][][]  )",
-      " \\ ------------------------------ /",
-      "  \\______________________________/"
-    ],
-    "Welcome"
-  ]);
+  const [allCommands, setAllCommands] = useState<Command[]>([
+    {
+      content: [
+        "     .__________________________.",
+        "    | .___________________. |==|",
+        "    | |     Hello ][      | |  |",
+        "    | |                   | |  |",
+        "    | |                   | |  |",
+        "    | |                   | |  |",
+        "    | |                  | | ,|",
+        "    | !___________________! |(c|",
+        "    !_______________________!__!",
+        "    !_______________________!__!",
+        "   /                            \\",
+        "  /  [][][][][][][][][][][][][]  \\",
+        " /  [][][][][][][][][][][][][][]  \\",
+        "(  [][][][][____________][][][][]  )",
+        " \\ ------------------------------ /",
+        "  \\______________________________/",
+        "    ",
+        "Welcome"
+      ],
+      isInput: false
+    }]
+  );
 
   const [input, setInput] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [spinner, setSpinner] = useState<string>('|');
+
+  const [historyIterator, setHistoryIterator] = useState<number>(0);
 
 
   const commandsEndRef = useRef<HTMLDivElement | null>(null);
@@ -132,10 +143,9 @@ function App() {
 
     setLoading(true);
 
-    console.log('submitteddddd');
     if (input === 'clear') {
       console.log('clearing');
-      setAllCommands([""]);
+      setAllCommands([]);
       setInput('');
     } else {
       fetch(`${BACKEND_URL}/command`, {
@@ -147,15 +157,26 @@ function App() {
       }) // Added missing closing bracket here
         .then((res) => res.json())
         .then((data) => {
-          console.log("output", data);
           checkForDirectoryChange(data.cwd);
           if (input.toLowerCase().includes("connect")) {
             checkForIpChange(data.terminalOutput);
           }
           setLoading(false);
-          setAllCommands([...allCommands, <span className="text-orange-500">{getCookie("ip") + data.cwd + ' $ ' + input}</span>, data.terminalOutput]);
+          // setAllCommands([...allCommands, <span className="text-orange-500">{getCookie("ip") + data.cwd + ' $ ' + input}</span>, data.terminalOutput]);
+          const newInputCommand: Command = { content: [getCookie("ip") + data.cwd + ' $ ' + input], isInput: true };
+          const newOutputCommand: Command = { content: data.terminalOutput, isInput: false };
+          setAllCommands([...allCommands, newInputCommand, newOutputCommand]);
           setInput('');
         });
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      // if (allCommands.length > 0) {
+      //   setInput(allCommands[allCommands.length - 1]);
+      // }
     }
   }
 
@@ -178,12 +199,16 @@ function App() {
 
       </div>
       <div style={{ maxHeight: '500px', overflowY: 'auto', scrollbarColor: '#8CF349 black', scrollbarWidth: 'thin' }} className='flex flex-col'>
-        {allCommands.map((command: string, index: number) => {
-          // Check if command is an array
-          const commandsToDisplay = Array.isArray(command) ? command : [command];
-          return commandsToDisplay.map((cmd, cmdIndex) => (
-            <span key={`${index}-${cmdIndex}`} className='text-lime-300 w-screen'>{cmd}</span>
-          ));
+        {allCommands.map((command: Command, index: number) => {
+          if (command.isInput) {
+            return <span key={`${index}`} className='text-orange-500 w-screen'>{command.content}</span>
+          }
+
+          const commandsToDisplay = Array.isArray(command.content) ? command.content : [command.content];
+          return commandsToDisplay.map((cmd, cmdIndex) => {
+            return <span key={`${index}-${cmdIndex}`} className='text-lime-300 w-screen'>{cmd}</span>
+          });
+
         })}
         {loading && <span className='text-lime-300 w-screen'>{spinner}</span>}
 
@@ -201,6 +226,7 @@ function App() {
             className='w-full bg-black text-lime-300 font-bold py-2 px-4 appearance-none focus:outline-none '
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
         </div>
       </form>
