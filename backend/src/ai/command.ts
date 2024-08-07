@@ -80,8 +80,6 @@ export async function commandHandler(args: {
     }) as CoreMessage[],
   });
 
-  console.log("here bro", object);
-
   const newMessages: CoreMessage[] = [
     { role: "user", content: args.command },
     { role: "assistant", content: JSON.stringify(object) },
