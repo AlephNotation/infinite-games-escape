@@ -102,6 +102,8 @@ function App() {
         "    ",
         "Welcome"
       ],
+      ip: getCookie("ip") || "localhost",
+      pwd: getCookie("cwd") || "/",
       isInput: false
     }]
   );
@@ -160,8 +162,8 @@ function App() {
           }
           setLoading(false);
           // setAllCommands([...allCommands, <span className="text-orange-500">{getCookie("ip") + data.cwd + ' $ ' + input}</span>, data.terminalOutput]);
-          const newInputCommand: Command = { content: [getCookie("ip") + data.cwd + ' $ ' + input], isInput: true };
-          const newOutputCommand: Command = { content: data.terminalOutput, isInput: false };
+          const newInputCommand: Command = { content: [input], ip: getCookie("ip") || "localhost", pwd: getCookie("cwd") || "/", isInput: true };
+          const newOutputCommand: Command = { content: data.terminalOutput, ip: getCookie("ip") || "localhost", pwd: getCookie("cwd") || "/", isInput: false };
           setAllCommands([...allCommands, newInputCommand, newOutputCommand]);
           setInput('');
         });
@@ -204,7 +206,7 @@ function App() {
       <div style={{ maxHeight: '500px', overflowY: 'auto', scrollbarColor: '#8CF349 black', scrollbarWidth: 'thin' }} className='flex flex-col'>
         {allCommands.map((command: Command, index: number) => {
           if (command.isInput) {
-            return <span key={`${index}`} className='text-orange-500 w-screen'>{command.content}</span>
+            return <span key={`${index}`} className='text-orange-500 w-screen'>{command.ip + command.pwd + ' $ ' + command.content}</span>
           }
 
           const commandsToDisplay = Array.isArray(command.content) ? command.content : [command.content];
