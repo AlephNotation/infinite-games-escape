@@ -2,13 +2,10 @@
 import { useRef, useEffect, useState } from 'react'; // Add useRef and useEffect
 import { v4 as uuidv4 } from 'uuid';
 import TypeAnimation from './TypeAnimation';
+import { Command } from './lib/types'
+import { calculateInputCommands } from './lib/calculateInputCommands';
 
 // import useStore from './Session';
-
-type Command = {
-  content: string[],
-  isInput: boolean
-}
 
 
 const checkForDirectoryChange = (cwd: string) => {
@@ -140,7 +137,7 @@ function App() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setHistoryIterator(0);
     setLoading(true);
 
     if (input === 'clear') {
@@ -174,9 +171,15 @@ function App() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'ArrowUp') {
       e.preventDefault();
-      // if (allCommands.length > 0) {
-      //   setInput(allCommands[allCommands.length - 1]);
-      // }
+      if (allCommands.length > 0) {
+        setHistoryIterator(historyIterator + 1);
+        console.log("historyIterator", historyIterator);
+        const inputCommands: Command[] = calculateInputCommands(allCommands);
+        console.log("inputCommands", inputCommands);
+        const iteratedCommand = inputCommands[inputCommands.length - 1 - historyIterator];
+        console.log("iteratedCommand", iteratedCommand);
+        setInput(iteratedCommand.content[0]);
+      }
     }
   }
 
