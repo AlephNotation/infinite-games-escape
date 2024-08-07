@@ -170,25 +170,37 @@ function App() {
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const inputCommands = calculateInputCommands(allCommands);
+    const maxIndex = inputCommands.length - 1;
+    console.log("inputCommands", inputCommands);
+
     if (e.key === 'ArrowUp') {
       e.preventDefault();
-      if (allCommands.length > 0) {
-        setHistoryIterator(historyIterator + 1);
-        console.log("historyIterator", historyIterator);
-        const inputCommands: Command[] = calculateInputCommands(allCommands);
-        console.log("inputCommands", inputCommands);
-        const iteratedCommand = inputCommands[inputCommands.length - 1 - historyIterator];
-        console.log("iteratedCommand", iteratedCommand);
+      if (maxIndex >= 0 && historyIterator < maxIndex) {
+        const newIterator = historyIterator + 1;
+        await setHistoryIterator(newIterator);
+        const iteratedCommand = inputCommands[maxIndex - newIterator];
         setInput(iteratedCommand.content[0]);
+      }
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIterator > 0) {
+        const newIterator = historyIterator - 1;
+        await setHistoryIterator(newIterator);
+        if (newIterator === 0) {
+          setInput(''); // Clear input when reaching the most recent command
+        } else {
+          const iteratedCommand = inputCommands[maxIndex - newIterator];
+          setInput(iteratedCommand.content[0]);
+        }
       }
     }
   }
 
 
-  // const handleBeep = () => {
-  //   setAllCommands([...allCommands, 'beep']);
-  // };
 
   return (
     <div className='text-lime-300 h-screen overflow-hidden w-screen relative bg-black p-10 flex flex-col' style={{ fontFamily: 'Courier New, monospace' }} >
