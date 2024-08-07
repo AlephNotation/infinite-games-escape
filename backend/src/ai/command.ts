@@ -66,7 +66,6 @@ export async function commandHandler(args: {
   console.log("this is the cd", cd);
 
   const pastMessages = await getChatMessages(args.userId);
-  console.log(pastMessages);
   const machineinfo = await getMachine(args.machineId);
   const { object } = await generateObject({
     model: anthropic("claude-3-5-sonnet-20240620"),
