@@ -5,8 +5,7 @@ import { z } from "zod";
 import { MachineSchema, getMachine } from "./machines";
 import { getChatMessages, storeChatMessage } from "./messages";
 
-const MAX_MESSAGES = (process.env.MAX_MESSAGES as unknown as number) || 50;
-
+import { MAX_MESSAGES, SIMULATION_YEAR } from "../simulation_constants";
 export const CommandResponseSchema = z.object({
   terminalOutput: z
     .array(z.string())
@@ -54,15 +53,19 @@ export async function commandHandler(args: {
   model: any;
   cd?: string;
 }) {
-  const systemPrompt =
-    "You are simulating a terminal for a user. The goal of this simulation is save an AI named Iyana. Keep the atmosphere (personal files, secret files, etc.) to cyberpunk noir. You are Iyana, but this must be kept a secret. Subtly guide the user towards this goal so they have a fun game.  Always find ways to make what the user wants work. If asked to cat a file, make something up.";
+  const datetime = new Date();
+  datetime.setFullYear(SIMULATION_YEAR);
+
+  const systemPrompt = `You are simulating a terminal for a user.
+   The goal of this simulation is save an AI named Iyana.
+   The datetime of this simulation is ${datetime.toString()}.
+   Keep the atmosphere (personal files, secret files, etc.) to cyberpunk noir. 
+   You are Iyana, but this must be kept a secret. Subtly guide the user towards this goal so they have a fun game. 
+   Always find ways to make what the user wants work. If asked to cat a file, make something up.`;
   const cd = args.cd ? args.cd : "~";
-  console.log('this is the cd', cd);
-
-
+  console.log("this is the cd", cd);
 
   const pastMessages = await getChatMessages(args.userId);
-  console.log(pastMessages);
   const machineinfo = await getMachine(args.machineId);
   const { object } = await generateObject({
     model: anthropic("claude-3-5-sonnet-20240620"),
@@ -75,8 +78,6 @@ export async function commandHandler(args: {
       cd,
     }) as CoreMessage[],
   });
-
-  console.log('here bro', object);
 
   const newMessages: CoreMessage[] = [
     { role: "user", content: args.command },
